@@ -1,0 +1,128 @@
+# acer-tea:
+# user defined bash startup script
+#
+
+#
+# environment variables
+#
+# CVS
+export CVS_RSH=ssh
+export CVSROOT=:pserver:jtao@hq-dev1.aerohive.com:2401/aerohive/aeroscvsrep
+
+# Perforce
+export P4USER=jtao
+export P4PORT=p4server-sv.aerohive.com:1666
+export P4CONFIG=.p4config
+export P4EDITOR=vim
+
+# Java
+export JAVA_HOME=/opt/java/jdk1.8.0_51
+export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export ANDROID_EMULATOR_FORCE_32BIT=true
+
+
+export PATH=~/bin:$PATH
+export PATH=$JAVA_HOME/bin:$PATH
+export PATH=~/x-tools/arm-cortexa9_neon-linux-gnueabihf/bin:$PATH
+export PATH=~/bin/p4v-2015.1.1233444/bin:$PATH
+
+
+#
+# alias
+#
+alias v243='xvnc4viewer 10.155.3.243:1 -XDialog >/dev/null 2>&1 &'
+alias v244='xvnc4viewer 10.155.3.244:1 -XDialog >/dev/null 2>&1 &'
+alias vtp1='xvnc4viewer 10.155.86.253 -XDialog >/dev/null 2>&1 &'
+alias 243='ssh -X jtao@10.155.3.243'
+alias 244='ssh -X jtao@10.155.3.244'
+alias 249='ssh -X jtao@10.155.3.249'
+alias 250='ssh -X jtao@10.155.3.250'
+alias 230='ssh -X jtao@10.155.30.230'
+alias 253='ssh -X bigtea@10.155.86.253'
+alias hq-dev5='ssh -X jtao@hq-dev5.aerohive.com'
+alias hq-dev6='ssh -X jtao@hq-dev6.aerohive.com'
+
+alias ap120='setenv AP120'
+alias ap340='setenv AP340'
+alias ap350='setenv AP350'
+alias vhive='setenv VI'
+alias ap170='setenv AP170'
+alias br100='setenv BR100'
+alias br120='setenv BR120'
+alias br200='setenv BR200'
+alias ap141='setenv AP141'
+alias chesa='setenv CHESAPEAKE'
+alias sr2000='setenv SR2000'
+alias ap390='setenv AP390'
+alias app1='setenv AH-APPLIANCE-1'
+alias ap230='setenv AP230'
+alias ap171='setenv AP171'
+alias ap71r='setenv AP71R'
+alias ap1130='setenv AP1130'
+alias ap130='setenv AP130'
+alias ap550='setenv AP550'
+alias ap250='setenv AP250'
+
+alias cvswhat='cvs -nq update  | egrep '\''^(C|M|A|U|R)'\'''
+alias cvsdiff='cvs diff -pdu10'
+alias cs="export TMPDIR=~/tmp; cscope -Rbkq"
+alias com="ls -ltrh /dev/ttyUSB*"
+alias com0="minicom -D /dev/ttyUSB0"
+alias com1="minicom -D /dev/ttyUSB1"
+alias com2="minicom -D /dev/ttyUSB2"
+alias com3="minicom -D /dev/ttyUSB3"
+
+
+alias pi6="ssh -X pi@10.155.86.216"
+#
+# functions
+#
+function setenv
+{
+    if [ $# -lt 1 ]; then
+        echo "Usage: setenv AH_PRODUCT [AEROS_ROOT]"
+        echo "  if AEROS_ROOT not specified, use \$PWD instead"
+    fi
+    export AH_PRODUCT="$1"
+    if [ "$2" == "" ]; then
+        export AEROS_ROOT="$PWD"
+    else
+        export AEROS_ROOT="$2"
+    fi
+}
+
+function se
+{
+    echo "CVSROOT = $CVSROOT"
+    echo "AEROS_ROOT = $AEROS_ROOT"
+    echo "AH_PRODUCT = $AH_PRODUCT"
+}
+
+function rr
+{
+    cd "$AEROS_ROOT"
+}
+
+export FILE_BUILD_FLAGS="$AEROS_ROOT/build/build_flags.txt"
+
+function mkah
+{
+
+    FLAGS=''
+    if [ -f $FILE_BUILD_FLAGS ]; then
+        FLAGS=`cat $FILE_BUILD_FLAGS`
+    fi
+    make $FLAGS $*
+}
+
+function mkimg
+{
+    mkah image
+}
+
+
+#
+# startup scripts
+#
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
